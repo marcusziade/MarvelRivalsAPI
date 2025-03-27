@@ -1,58 +1,66 @@
 import Foundation
 
-enum Endpoint {
-    // Existing endpoints
+/// The available endpoints for the Marvel Rivals API.
+public enum Endpoint {
+    // Hero endpoints
     case heroes
     case hero(query: String)
     case heroStats(query: String)
-    case findPlayer(username: String)
-    case playerStats(query: String, season: Int?)
-    case updatePlayer(query: String)
-
-    // New endpoints
-    case battlePass(season: Int?)
-    case devDiaries(page: Int, limit: Int)
-    case devDiary(id: String)
     case heroLeaderboard(query: String, platform: String)
     case heroCostumes(query: String)
     case heroCostume(heroQuery: String, costumeQuery: String)
+
+    // Player endpoints
+    case findPlayer(username: String)
+    case playerStats(query: String, season: Int?)
+    case playerMatchHistory(query: String, season: Int?, skip: Int, gameMode: Int)
+    case updatePlayer(query: String)
+
+    // Content endpoints
+    case battlePass(season: Int?)
+    case devDiaries(page: Int, limit: Int)
+    case devDiary(id: String)
     case items(type: String?, page: Int, limit: Int)
     case item(query: String)
     case maps(page: Int, limit: Int)
     case match(matchUid: String)
-    case playerMatchHistory(query: String, season: Int?, skip: Int, gameMode: Int)
     case patchNotes(page: Int, limit: Int)
     case patchNote(id: String)
 
+    /// The relative path component for the endpoint.
     var path: String {
         switch self {
-        // Existing paths
+        // Hero paths
         case .heroes:
             return "/heroes"
         case .hero(let query):
             return "/heroes/hero/\(query)"
         case .heroStats(let query):
             return "/heroes/hero/\(query)/stats"
-        case .findPlayer(let username):
-            return "/find-player/\(username)"
-        case .playerStats(let query, _):
-            return "/player/\(query)"
-        case .updatePlayer(let query):
-            return "/player/\(query)/update"
-
-        // New paths
-        case .battlePass:
-            return "/battlepass"
-        case .devDiaries:
-            return "/dev-diaries"
-        case .devDiary(let id):
-            return "/dev-diary/\(id)"
         case .heroLeaderboard(let query, _):
             return "/heroes/leaderboard/\(query)"
         case .heroCostumes(let query):
             return "/heroes/hero/\(query)/costumes"
         case .heroCostume(let heroQuery, let costumeQuery):
             return "/heroes/hero/\(heroQuery)/costume/\(costumeQuery)"
+
+        // Player paths
+        case .findPlayer(let username):
+            return "/find-player/\(username)"
+        case .playerStats(let query, _):
+            return "/player/\(query)"
+        case .playerMatchHistory(let query, _, _, _):
+            return "/player/\(query)/match-history"
+        case .updatePlayer(let query):
+            return "/player/\(query)/update"
+
+        // Content paths
+        case .battlePass:
+            return "/battlepass"
+        case .devDiaries:
+            return "/dev-diaries"
+        case .devDiary(let id):
+            return "/dev-diary/\(id)"
         case .items:
             return "/items"
         case .item(let query):
@@ -61,8 +69,6 @@ enum Endpoint {
             return "/maps"
         case .match(let matchUid):
             return "/match/\(matchUid)"
-        case .playerMatchHistory(let query, _, _, _):
-            return "/player/\(query)/match-history"
         case .patchNotes:
             return "/patch-notes"
         case .patchNote(let id):
@@ -70,6 +76,7 @@ enum Endpoint {
         }
     }
 
+    /// The HTTP method for the endpoint.
     var method: HTTPMethod {
         switch self {
         case .updatePlayer:
@@ -79,10 +86,15 @@ enum Endpoint {
         }
     }
 
+    /// The query parameters for the endpoint.
     var queryItems: [URLQueryItem]? {
         var items: [URLQueryItem] = []
 
         switch self {
+        case .playerStats(_, let season):
+            if let season = season {
+                items.append(URLQueryItem(name: "season", value: String(season)))
+            }
         case .battlePass(let season):
             if let season = season {
                 items.append(URLQueryItem(name: "season", value: String(season)))
@@ -116,19 +128,23 @@ enum Endpoint {
 
         return items.isEmpty ? nil : items
     }
+
+    /// Builds a full URL with the base URL, path, and query items.
+    /// - Parameter baseURL: The base URL for the API.
+    /// - Returns: The constructed URL or nil if the URL is invalid.
+    func buildURL(with baseURL: String) -> URL? {
+        var components = URLComponents(string: baseURL + path)
+        components?.queryItems = queryItems
+        return components?.url
+    }
 }
 
-enum HTTPMethod: String {
+/// HTTP methods supported by the API.
+public enum HTTPMethod: String {
     case get = "GET"
     case post = "POST"
+    case put = "PUT"
+    case delete = "DELETE"
+    case patch = "PATCH"
 }
 
-enum APIError: Error {
-    case invalidURL
-    case invalidResponse
-    case badRequest
-    case unauthorized
-    case notFound
-    case serverError
-    case unknown
-}
