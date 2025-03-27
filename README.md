@@ -1,8 +1,15 @@
-# Marvel Rivals API
+# Marvel Rivals API & RivalTracker TUI
+
+This repository contains:
+
+1. **MarvelRivalsAPI**: A Swift package for interacting with the Marvel Rivals API
+2. **RivalTracker**: A terminal user interface (TUI) application for Marvel Rivals players
+
+## MarvelRivalsAPI Swift Package
 
 A Swift Package SDK for the Marvel Rivals API. This package provides a type-safe way to interact with the Marvel Rivals API, with robust error handling, logging, and comprehensive test coverage.
 
-## Features
+### Features
 
 - ✅ Full API coverage for all Marvel Rivals endpoints
 - ✅ Swift concurrency support with async/await
@@ -210,6 +217,75 @@ swift test
 
 Or through Xcode's Test Navigator.
 
+## RivalTracker TUI Application
+
+RivalTracker is a terminal user interface for Marvel Rivals players that provides real-time game statistics, hero information, and match analysis in a terminal environment.
+
+### Features
+
+- **Player Dashboard**: Track your stats, match history, and performance metrics
+- **Hero Explorer**: Browse the complete hero roster with detailed information
+- **Match Analysis**: Review recent matches and analyze performance
+- **Leaderboards**: View top players globally and by hero
+- **Vim-style Navigation**: Familiar keyboard shortcuts for terminal users
+- **Cross-platform**: Works on macOS and Linux
+
+### Screenshots
+
+(Screenshots would be added here)
+
+### Installation
+
+#### From source
+
+1. Clone this repository:
+   ```
+   git clone https://github.com/yourusername/MarvelRivalsAPI.git
+   cd MarvelRivalsAPI
+   ```
+
+2. Build the application:
+   ```
+   swift build -c release
+   ```
+
+3. Run the application:
+   ```
+   ./.build/release/RivalTracker
+   ```
+
+### Usage
+
+When you first run RivalTracker, you'll need to enter your Marvel Rivals API key. This is stored securely using your system's keychain (macOS) or encrypted storage (Linux).
+
+#### Navigation
+
+RivalTracker uses vim-style keybindings for navigation:
+
+- `h`/`l` or Left/Right arrows: Switch between tabs
+- `j`/`k` or Up/Down arrows: Navigate lists
+- `i`: Enter input mode (when entering text)
+- `Esc`: Exit input mode or go back
+- `Enter`: Select an item
+- `r`: Refresh data
+- `q`: Quit
+
+### Requirements
+
+- Swift 6.0+ 
+- A terminal with ANSI color support
+- Marvel Rivals API key
+
+### Platforms
+
+- macOS 10.15+
+- Linux (with Swift 6.0+ installed)
+
 ## License
 
 This project is available under the MIT license. See the LICENSE file for more info.
+
+## Acknowledgments
+
+- Marvel Rivals and all related properties are trademarks of Marvel Entertainment, LLC.
+- This is an unofficial tool and is not affiliated with Marvel or NetEase Games.
