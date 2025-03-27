@@ -35,9 +35,6 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "NIOPosix", package: "swift-nio"),
                 .product(name: "SystemPackage", package: "swift-system"),
-            ],
-            resources: [
-                .process("Resources")
             ]),
         .testTarget(
             name: "MarvelRivalsAPITests",

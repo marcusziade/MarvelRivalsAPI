@@ -8,6 +8,18 @@ struct HelpScreen: ScreenProtocol {
     /// The selected section.
     private var selectedSection: Int = 0
     
+    /// Initialize a new help screen.
+    /// - Parameters:
+    ///   - onBack: Callback for going back to the previous screen.
+    ///   - selectedSection: The selected section. Default is 0.
+    init(
+        onBack: @escaping () -> Void,
+        selectedSection: Int = 0
+    ) {
+        self.onBack = onBack
+        self.selectedSection = selectedSection
+    }
+    
     /// The help sections.
     private let sections = [
         ("Navigation", [
@@ -130,7 +142,7 @@ struct HelpScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch key {
         case .up, .character("k"):
             // Move up in section list

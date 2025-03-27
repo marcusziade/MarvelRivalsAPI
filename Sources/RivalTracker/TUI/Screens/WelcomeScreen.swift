@@ -8,6 +8,24 @@ struct WelcomeScreen: ScreenProtocol {
     /// The API key input by the user.
     private var apiKey: String = ""
     
+    /// Initialize a welcome screen.
+    /// - Parameters:
+    ///   - onboarding: Callback for completing the onboarding process.
+    ///   - apiKey: The API key input by the user.
+    ///   - inputMode: The input mode.
+    ///   - cursorPosition: The cursor position in the API key input.
+    init(
+        onboarding: @escaping (String) -> Void,
+        apiKey: String = "",
+        inputMode: InputMode = .normal,
+        cursorPosition: Int = 0
+    ) {
+        self.onboarding = onboarding
+        self.apiKey = apiKey
+        self.inputMode = inputMode
+        self.cursorPosition = cursorPosition
+    }
+    
     /// The input mode.
     private var inputMode: InputMode = .normal
     
@@ -15,7 +33,7 @@ struct WelcomeScreen: ScreenProtocol {
     private var cursorPosition: Int = 0
     
     /// Input modes.
-    private enum InputMode {
+    enum InputMode {
         case normal
         case input
     }
@@ -117,7 +135,7 @@ struct WelcomeScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch inputMode {
         case .normal:
             handleNormalModeKey(key)
@@ -128,7 +146,7 @@ struct WelcomeScreen: ScreenProtocol {
     
     /// Handle a key press in normal mode.
     /// - Parameter key: The key that was pressed.
-    private func handleNormalModeKey(_ key: Key) {
+    private mutating func handleNormalModeKey(_ key: Key) {
         switch key {
         case .character("i"), .character("I"):
             // Enter input mode
@@ -152,7 +170,7 @@ struct WelcomeScreen: ScreenProtocol {
     
     /// Handle a key press in input mode.
     /// - Parameter key: The key that was pressed.
-    private func handleInputModeKey(_ key: Key) {
+    private mutating func handleInputModeKey(_ key: Key) {
         switch key {
         case .escape:
             // Exit input mode

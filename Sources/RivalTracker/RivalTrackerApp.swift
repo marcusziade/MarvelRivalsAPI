@@ -191,8 +191,8 @@ final class RivalTrackerApp {
                 tuiManager.showLoadingIndicator("Loading player data...")
                 
                 let player = try await api.findPlayer(username: username)
-                let stats = try await api.getPlayerStats(query: player.id)
-                let matches = try await api.getPlayerMatchHistory(query: player.id, skip: 0)
+                let stats = try await api.getPlayerStats(query: player.id, season: nil)
+                let matches = try await api.getPlayerMatchHistory(query: player.id, season: nil, skip: 0, gameMode: 0)
                 
                 // Save the player username to config for next time
                 config.lastUsedPlayer = username
@@ -276,7 +276,7 @@ final class RivalTrackerApp {
                 
                 // Load hero stats and leaderboard in parallel
                 async let statsTask = api.getHeroStats(byQuery: hero.id)
-                async let leaderboardTask = api.getHeroLeaderboard(query: hero.id)
+                async let leaderboardTask = api.getHeroLeaderboard(query: hero.id, platform: "pc")
                 
                 let stats = try await statsTask
                 let leaderboard = try await leaderboardTask
@@ -401,7 +401,7 @@ final class RivalTrackerApp {
             do {
                 tuiManager.showLoadingIndicator("Loading leaderboard...")
                 
-                let leaderboard = try await api.getHeroLeaderboard(query: hero.id)
+                let leaderboard = try await api.getHeroLeaderboard(query: hero.id, platform: "pc")
                 
                 // Hide loading indicator
                 tuiManager.hideLoadingIndicator()

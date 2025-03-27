@@ -18,6 +18,28 @@ struct SettingsScreen: ScreenProtocol {
     /// The selected setting index.
     private var selectedIndex: Int = 0
     
+    /// Initialize a settings screen.
+    /// - Parameters:
+    ///   - config: The current configuration.
+    ///   - onSave: Callback for saving changes.
+    ///   - onCancel: Callback for canceling changes.
+    ///   - onResetAPIKey: Callback for resetting the API key.
+    ///   - selectedIndex: The selected setting index. Default is 0.
+    init(
+        config: AppConfig,
+        onSave: @escaping (AppConfig) -> Void,
+        onCancel: @escaping () -> Void,
+        onResetAPIKey: @escaping () -> Void,
+        selectedIndex: Int = 0
+    ) {
+        self.config = config
+        self.onSave = onSave
+        self.onCancel = onCancel
+        self.onResetAPIKey = onResetAPIKey
+        self.selectedIndex = selectedIndex
+        self.editedConfig = config
+    }
+    
     /// The edited configuration.
     private var editedConfig: AppConfig
     
@@ -84,7 +106,7 @@ struct SettingsScreen: ScreenProtocol {
                 renderer.setBackgroundColor(.blue)
             }
             
-            renderer.write(editedConfig.logLevel.description)
+            renderer.write(String(describing: editedConfig.logLevel))
             
             if selectedIndex == 0 && isEditing {
                 renderer.resetColors()
@@ -239,7 +261,7 @@ struct SettingsScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         // Handle reset API key confirmation
         if showResetConfirmation {
             switch key {
@@ -304,7 +326,7 @@ struct SettingsScreen: ScreenProtocol {
     
     /// Handle a key press in editing mode.
     /// - Parameter key: The key that was pressed.
-    private func handleEditingModeKey(_ key: Key) {
+    private mutating func handleEditingModeKey(_ key: Key) {
         switch key {
         case .escape:
             // Exit editing mode
@@ -328,7 +350,7 @@ struct SettingsScreen: ScreenProtocol {
     }
     
     /// Decrease the value of the selected setting.
-    private func decreaseSelectedValue() {
+    private mutating func decreaseSelectedValue() {
         switch selectedIndex {
         case 0:
             // Decrease log level
@@ -358,7 +380,7 @@ struct SettingsScreen: ScreenProtocol {
     }
     
     /// Increase the value of the selected setting.
-    private func increaseSelectedValue() {
+    private mutating func increaseSelectedValue() {
         switch selectedIndex {
         case 0:
             // Increase log level

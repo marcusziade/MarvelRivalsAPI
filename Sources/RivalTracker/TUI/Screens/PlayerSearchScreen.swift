@@ -17,8 +17,29 @@ struct PlayerSearchScreen: ScreenProtocol {
     /// The cursor position in the username input.
     private var cursorPosition: Int = 0
     
+    /// Initialize a player search screen.
+    /// - Parameters:
+    ///   - onSearch: Callback for searching for a player.
+    ///   - onCancel: Callback for canceling the search.
+    ///   - username: The current username input.
+    ///   - inputMode: The input mode.
+    ///   - cursorPosition: The cursor position in the username input.
+    init(
+        onSearch: @escaping (String) -> Void,
+        onCancel: @escaping () -> Void,
+        username: String = "",
+        inputMode: InputMode = .normal,
+        cursorPosition: Int = 0
+    ) {
+        self.onSearch = onSearch
+        self.onCancel = onCancel
+        self.username = username
+        self.inputMode = inputMode
+        self.cursorPosition = cursorPosition
+    }
+    
     /// Input modes.
-    private enum InputMode {
+    enum InputMode {
         case normal
         case input
     }
@@ -107,7 +128,7 @@ struct PlayerSearchScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch inputMode {
         case .normal:
             handleNormalModeKey(key)
@@ -118,7 +139,7 @@ struct PlayerSearchScreen: ScreenProtocol {
     
     /// Handle a key press in normal mode.
     /// - Parameter key: The key that was pressed.
-    private func handleNormalModeKey(_ key: Key) {
+    private mutating func handleNormalModeKey(_ key: Key) {
         switch key {
         case .character("i"), .character("I"):
             // Enter input mode
@@ -146,7 +167,7 @@ struct PlayerSearchScreen: ScreenProtocol {
     
     /// Handle a key press in input mode.
     /// - Parameter key: The key that was pressed.
-    private func handleInputModeKey(_ key: Key) {
+    private mutating func handleInputModeKey(_ key: Key) {
         switch key {
         case .escape:
             // Exit input mode

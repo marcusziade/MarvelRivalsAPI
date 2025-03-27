@@ -21,6 +21,27 @@ struct HeroLeaderboardScreen: ScreenProtocol {
     /// The number of displayed entries per page.
     private let entriesPerPage = 15
     
+    /// Initialize a new hero leaderboard screen.
+    /// - Parameters:
+    ///   - hero: The hero whose leaderboard is being displayed.
+    ///   - leaderboard: The leaderboard data.
+    ///   - onBack: Callback for going back to the previous screen.
+    ///   - scrollOffset: The scroll offset for the leaderboard entries. Default is 0.
+    ///   - platformFilter: The selected platform filter. Default is "all".
+    init(
+        hero: Hero,
+        leaderboard: HeroLeaderboard,
+        onBack: @escaping () -> Void,
+        scrollOffset: Int = 0,
+        platformFilter: String = "all"
+    ) {
+        self.hero = hero
+        self.leaderboard = leaderboard
+        self.onBack = onBack
+        self.scrollOffset = scrollOffset
+        self.platformFilter = platformFilter
+    }
+    
     /// The filtered leaderboard entries based on the platform filter.
     private var filteredEntries: [HeroLeaderboard.LeaderboardEntry] {
         if platformFilter == "all" {
@@ -32,7 +53,7 @@ struct HeroLeaderboardScreen: ScreenProtocol {
     
     /// Render the screen.
     /// - Parameter context: The screen context.
-    func render(in context: ScreenContext) {
+    mutating func render(in context: ScreenContext) {
         let renderer = context.renderer
         let width = context.terminalSize.columns
         let height = context.terminalSize.rows
@@ -177,7 +198,7 @@ struct HeroLeaderboardScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch key {
         case .up, .character("k"):
             // Scroll up

@@ -15,6 +15,33 @@ struct HeroDetailsScreen: ScreenProtocol {
     /// Callback for going back to the previous screen.
     let onBack: () -> Void
     
+    /// Initialize a hero details screen.
+    /// - Parameters:
+    ///   - hero: The hero to display.
+    ///   - stats: The hero stats.
+    ///   - leaderboard: The hero leaderboard.
+    ///   - onBack: Callback for going back to the previous screen.
+    ///   - selectedTab: The selected tab. Default is Overview.
+    ///   - selectedRow: The selected row. Default is 0.
+    ///   - scrollOffset: The scroll offset. Default is 0.
+    init(
+        hero: Hero,
+        stats: HeroStats,
+        leaderboard: HeroLeaderboard,
+        onBack: @escaping () -> Void,
+        selectedTab: Tab = .overview,
+        selectedRow: Int = 0,
+        scrollOffset: Int = 0
+    ) {
+        self.hero = hero
+        self.stats = stats
+        self.leaderboard = leaderboard
+        self.onBack = onBack
+        self.selectedTab = selectedTab
+        self.selectedRow = selectedRow
+        self.scrollOffset = scrollOffset
+    }
+    
     /// The selected tab.
     private var selectedTab: Tab = .overview
     
@@ -25,7 +52,7 @@ struct HeroDetailsScreen: ScreenProtocol {
     private var scrollOffset: Int = 0
     
     /// Tabs for hero details.
-    private enum Tab: Int, CaseIterable {
+    enum Tab: Int, CaseIterable {
         case overview
         case abilities
         case stats
@@ -48,7 +75,7 @@ struct HeroDetailsScreen: ScreenProtocol {
     
     /// Render the screen.
     /// - Parameter context: The screen context.
-    func render(in context: ScreenContext) {
+    mutating func render(in context: ScreenContext) {
         let renderer = context.renderer
         let width = context.terminalSize.columns
         let height = context.terminalSize.rows
@@ -342,7 +369,7 @@ struct HeroDetailsScreen: ScreenProtocol {
     ///   - startRow: The row to start rendering at.
     ///   - width: The width of the terminal.
     ///   - height: The height of the content area.
-    private func renderLeaderboardTab(renderer: TerminalRenderer, startRow: Int, width: Int, height: Int) {
+    private mutating func renderLeaderboardTab(renderer: TerminalRenderer, startRow: Int, width: Int, height: Int) {
         // Draw title
         let titleText = "Hero Leaderboard - Platform: \(leaderboard.platform)"
         renderer.renderAt(row: startRow, column: 2) {
@@ -422,7 +449,7 @@ struct HeroDetailsScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch key {
         case .left, .character("h"):
             // Switch to the previous tab

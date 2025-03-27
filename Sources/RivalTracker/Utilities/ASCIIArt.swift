@@ -103,15 +103,15 @@ enum ASCIIArt {
         }
         
         // Normalize the values to 0-8 range for ASCII sparklines
-        let min = values.min() ?? 0
-        let max = values.max() ?? 1
-        let range = max - min
+        let minValue = values.min() ?? 0
+        let maxValue = values.max() ?? 1
+        let range = maxValue - minValue
         
         if range == 0 {
             return String(repeating: "▄", count: width)
         }
         
-        let normalizedValues = values.map { min(7, Int(floor(($0 - min) / range * 8))) }
+        let normalizedValues = values.map { Swift.min(7, Int(($0 - minValue) / range * 8.0)) }
         
         // Use evenly spaced samples if we have more values than width
         var sampledValues: [Int] = []
@@ -121,7 +121,7 @@ enum ASCIIArt {
         } else {
             let step = Double(normalizedValues.count) / Double(width)
             for i in 0..<width {
-                let index = min(normalizedValues.count - 1, Int(Double(i) * step))
+                let index = Swift.min(normalizedValues.count - 1, Int(Double(i) * step))
                 sampledValues.append(normalizedValues[index])
             }
         }

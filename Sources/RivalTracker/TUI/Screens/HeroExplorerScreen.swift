@@ -27,8 +27,38 @@ struct HeroExplorerScreen: ScreenProtocol {
     /// The cursor position in the filter input.
     private var cursorPosition: Int = 0
     
+    /// Initialize a hero explorer screen.
+    /// - Parameters:
+    ///   - heroes: The heroes to display.
+    ///   - onSelect: Callback for selecting a hero.
+    ///   - onBack: Callback for going back to the previous screen.
+    ///   - selectedIndex: The selected hero index. Default is 0.
+    ///   - scrollOffset: The scroll offset for the hero list. Default is 0.
+    ///   - filterText: The filter text for hero search. Default is empty string.
+    ///   - inputMode: The input mode. Default is normal.
+    ///   - cursorPosition: The cursor position in the filter input. Default is 0.
+    init(
+        heroes: [Hero],
+        onSelect: @escaping (Hero) -> Void,
+        onBack: @escaping () -> Void,
+        selectedIndex: Int = 0,
+        scrollOffset: Int = 0,
+        filterText: String = "",
+        inputMode: InputMode = .normal,
+        cursorPosition: Int = 0
+    ) {
+        self.heroes = heroes
+        self.onSelect = onSelect
+        self.onBack = onBack
+        self.selectedIndex = selectedIndex
+        self.scrollOffset = scrollOffset
+        self.filterText = filterText
+        self.inputMode = inputMode
+        self.cursorPosition = cursorPosition
+    }
+    
     /// Input modes.
-    private enum InputMode {
+    enum InputMode {
         case normal
         case search
     }
@@ -47,7 +77,7 @@ struct HeroExplorerScreen: ScreenProtocol {
     
     /// Render the screen.
     /// - Parameter context: The screen context.
-    func render(in context: ScreenContext) {
+    mutating func render(in context: ScreenContext) {
         let renderer = context.renderer
         let width = context.terminalSize.columns
         let height = context.terminalSize.rows
@@ -244,7 +274,7 @@ struct HeroExplorerScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch inputMode {
         case .normal:
             handleNormalModeKey(key)
@@ -255,7 +285,7 @@ struct HeroExplorerScreen: ScreenProtocol {
     
     /// Handle a key press in normal mode.
     /// - Parameter key: The key that was pressed.
-    private func handleNormalModeKey(_ key: Key) {
+    private mutating func handleNormalModeKey(_ key: Key) {
         switch key {
         case .up, .character("k"):
             // Move up
@@ -307,7 +337,7 @@ struct HeroExplorerScreen: ScreenProtocol {
     
     /// Handle a key press in search mode.
     /// - Parameter key: The key that was pressed.
-    private func handleSearchModeKey(_ key: Key) {
+    private mutating func handleSearchModeKey(_ key: Key) {
         switch key {
         case .escape:
             // Exit search mode

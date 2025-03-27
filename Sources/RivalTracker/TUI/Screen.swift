@@ -14,11 +14,11 @@ struct ScreenContext {
 protocol ScreenProtocol {
     /// Render the screen.
     /// - Parameter context: The screen context.
-    func render(in context: ScreenContext)
+    mutating func render(in context: ScreenContext)
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key)
+    mutating func handleKey(_ key: Key)
 }
 
 /// Represents a screen in the application.
@@ -128,13 +128,14 @@ enum Screen {
 extension Screen: ScreenProtocol {
     /// Render the screen.
     /// - Parameter context: The screen context.
-    func render(in context: ScreenContext) {
+    mutating func render(in context: ScreenContext) {
         switch self {
         case .welcome(let onboarding):
-            WelcomeScreen(onboarding: onboarding).render(in: context)
+            var screen = WelcomeScreen(onboarding: onboarding)
+            screen.render(in: context)
             
         case let .mainMenu(onPlayerDashboard, onHeroExplorer, onMatchAnalysis, onLeaderboards, onSettings, onHelp, onExit):
-            MainMenuScreen(
+            var screen = MainMenuScreen(
                 onPlayerDashboard: onPlayerDashboard,
                 onHeroExplorer: onHeroExplorer,
                 onMatchAnalysis: onMatchAnalysis,
@@ -142,88 +143,100 @@ extension Screen: ScreenProtocol {
                 onSettings: onSettings,
                 onHelp: onHelp,
                 onExit: onExit
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .playerSearch(onSearch, onCancel):
-            PlayerSearchScreen(
+            var screen = PlayerSearchScreen(
                 onSearch: onSearch,
                 onCancel: onCancel
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .playerDashboard(player, stats, matches, onRefresh, onBack):
-            PlayerDashboardScreen(
+            var screen = PlayerDashboardScreen(
                 player: player,
                 stats: stats,
                 matches: matches,
                 onRefresh: onRefresh,
                 onBack: onBack
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .heroExplorer(heroes, onSelect, onBack):
-            HeroExplorerScreen(
+            var screen = HeroExplorerScreen(
                 heroes: heroes,
                 onSelect: onSelect,
                 onBack: onBack
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .heroDetails(hero, stats, leaderboard, onBack):
-            HeroDetailsScreen(
+            var screen = HeroDetailsScreen(
                 hero: hero,
                 stats: stats,
                 leaderboard: leaderboard,
                 onBack: onBack
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .matchSearch(onSearch, onCancel):
-            MatchSearchScreen(
+            var screen = MatchSearchScreen(
                 onSearch: onSearch,
                 onCancel: onCancel
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .matchDetails(match, onBack):
-            MatchDetailsScreen(
+            var screen = MatchDetailsScreen(
                 match: match,
                 onBack: onBack
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .leaderboardSelection(heroes, onSelect, onBack):
-            LeaderboardSelectionScreen(
+            var screen = LeaderboardSelectionScreen(
                 heroes: heroes,
                 onSelect: onSelect,
                 onBack: onBack
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .heroLeaderboard(hero, leaderboard, onBack):
-            HeroLeaderboardScreen(
+            var screen = HeroLeaderboardScreen(
                 hero: hero,
                 leaderboard: leaderboard,
                 onBack: onBack
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .settings(config, onSave, onCancel, onResetAPIKey):
-            SettingsScreen(
+            var screen = SettingsScreen(
                 config: config,
                 onSave: onSave,
                 onCancel: onCancel,
                 onResetAPIKey: onResetAPIKey
-            ).render(in: context)
+            )
+            screen.render(in: context)
             
         case let .help(onBack):
-            HelpScreen(
+            var screen = HelpScreen(
                 onBack: onBack
-            ).render(in: context)
+            )
+            screen.render(in: context)
         }
     }
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch self {
         case .welcome(let onboarding):
-            WelcomeScreen(onboarding: onboarding).handleKey(key)
+            var screen = WelcomeScreen(onboarding: onboarding)
+            screen.handleKey(key)
             
         case let .mainMenu(onPlayerDashboard, onHeroExplorer, onMatchAnalysis, onLeaderboards, onSettings, onHelp, onExit):
-            MainMenuScreen(
+            var screen = MainMenuScreen(
                 onPlayerDashboard: onPlayerDashboard,
                 onHeroExplorer: onHeroExplorer,
                 onMatchAnalysis: onMatchAnalysis,
@@ -231,76 +244,87 @@ extension Screen: ScreenProtocol {
                 onSettings: onSettings,
                 onHelp: onHelp,
                 onExit: onExit
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .playerSearch(onSearch, onCancel):
-            PlayerSearchScreen(
+            var screen = PlayerSearchScreen(
                 onSearch: onSearch,
                 onCancel: onCancel
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .playerDashboard(player, stats, matches, onRefresh, onBack):
-            PlayerDashboardScreen(
+            var screen = PlayerDashboardScreen(
                 player: player,
                 stats: stats,
                 matches: matches,
                 onRefresh: onRefresh,
                 onBack: onBack
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .heroExplorer(heroes, onSelect, onBack):
-            HeroExplorerScreen(
+            var screen = HeroExplorerScreen(
                 heroes: heroes,
                 onSelect: onSelect,
                 onBack: onBack
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .heroDetails(hero, stats, leaderboard, onBack):
-            HeroDetailsScreen(
+            var screen = HeroDetailsScreen(
                 hero: hero,
                 stats: stats,
                 leaderboard: leaderboard,
                 onBack: onBack
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .matchSearch(onSearch, onCancel):
-            MatchSearchScreen(
+            var screen = MatchSearchScreen(
                 onSearch: onSearch,
                 onCancel: onCancel
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .matchDetails(match, onBack):
-            MatchDetailsScreen(
+            var screen = MatchDetailsScreen(
                 match: match,
                 onBack: onBack
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .leaderboardSelection(heroes, onSelect, onBack):
-            LeaderboardSelectionScreen(
+            var screen = LeaderboardSelectionScreen(
                 heroes: heroes,
                 onSelect: onSelect,
                 onBack: onBack
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .heroLeaderboard(hero, leaderboard, onBack):
-            HeroLeaderboardScreen(
+            var screen = HeroLeaderboardScreen(
                 hero: hero,
                 leaderboard: leaderboard,
                 onBack: onBack
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .settings(config, onSave, onCancel, onResetAPIKey):
-            SettingsScreen(
+            var screen = SettingsScreen(
                 config: config,
                 onSave: onSave,
                 onCancel: onCancel,
                 onResetAPIKey: onResetAPIKey
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
             
         case let .help(onBack):
-            HelpScreen(
+            var screen = HelpScreen(
                 onBack: onBack
-            ).handleKey(key)
+            )
+            screen.handleKey(key)
         }
     }
 }

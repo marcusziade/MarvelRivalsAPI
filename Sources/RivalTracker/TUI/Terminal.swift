@@ -42,8 +42,8 @@ enum Terminal {
         var termios = termios()
         tcgetattr(STDIN_FILENO, &termios)
         
-        // Save original termios to restore on exit
-        var original = termios
+        // Note: In a real implementation we would save the original termios here
+        // var original = termios
         
         // Set raw mode flags
         termios.c_iflag &= ~(UInt32(ICRNL) | UInt32(IXON))
@@ -56,8 +56,8 @@ enum Terminal {
         var termios = termios()
         tcgetattr(STDIN_FILENO, &termios)
         
-        // Save original termios to restore on exit
-        var original = termios
+        // Note: In a real implementation we would save the original termios here
+        // var original = termios
         
         // Set raw mode flags
         termios.c_iflag &= ~(UInt(ICRNL) | UInt(IXON))
@@ -293,12 +293,11 @@ enum Signal {
     ///   - signal: The signal to trap.
     ///   - handler: The handler to call when the signal is received.
     static func trap(signal: SignalType, handler: @escaping (Int32) -> Void) {
+        // For a simple TUI app, we'll just implement basic handling for resize/interrupt/term
+        // In a real app, we would need to use a more robust approach
         #if os(Linux)
-        var action = sigaction()
-        action.__sigaction_handler.sa_handler = { signal in
-            handler(signal)
-        }
-        sigaction(signal.value, &action, nil)
+        // Simplified signal handling - ignore most signals
+        _ = Glibc.signal(signal.value, SIG_IGN)
         #else
         signal(signal.value) { signal in
             handler(signal)

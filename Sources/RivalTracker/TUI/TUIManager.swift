@@ -89,7 +89,8 @@ final class TUIManager {
         )
         
         // Render the screen
-        screen.render(in: context)
+        var mutableScreen = screen
+        mutableScreen.render(in: context)
     }
     
     /// Show an error message.
@@ -145,7 +146,17 @@ final class TUIManager {
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
     func handleKey(_ key: Key) {
+        guard var screen = currentScreen else {
+            return
+        }
+        
         // Pass the key to the current screen
-        currentScreen?.handleKey(key)
+        screen.handleKey(key)
+        
+        // Update the current screen
+        currentScreen = screen
+        
+        // Re-render the screen
+        renderScreen(screen)
     }
 }

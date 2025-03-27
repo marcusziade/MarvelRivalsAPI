@@ -15,8 +15,26 @@ struct MatchDetailsScreen: ScreenProtocol {
     /// The selected player index.
     private var selectedPlayerIndex: Int = 0
     
+    /// Initialize a match details screen.
+    /// - Parameters:
+    ///   - match: The match to display.
+    ///   - onBack: Callback for going back to the previous screen.
+    ///   - selectedTab: The selected tab. Default is Overview.
+    ///   - selectedPlayerIndex: The selected player index. Default is 0.
+    init(
+        match: Match,
+        onBack: @escaping () -> Void,
+        selectedTab: Tab = .overview,
+        selectedPlayerIndex: Int = 0
+    ) {
+        self.match = match
+        self.onBack = onBack
+        self.selectedTab = selectedTab
+        self.selectedPlayerIndex = selectedPlayerIndex
+    }
+    
     /// Tabs for match details.
-    private enum Tab: Int, CaseIterable {
+    enum Tab: Int, CaseIterable {
         case overview
         case playerStats
         case teamAnalysis
@@ -565,7 +583,7 @@ struct MatchDetailsScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         let matchDetails = match.matchDetails
         
         switch key {

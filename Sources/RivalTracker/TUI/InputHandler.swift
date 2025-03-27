@@ -4,6 +4,7 @@ import Glibc
 #else
 import Darwin
 #endif
+import NIOCore
 import NIOPosix
 
 /// Key representation.
@@ -143,8 +144,12 @@ final class InputHandler {
             return nil
         }
         
-        var buffer = [UInt8](repeating: 0, count: 32)
-        let bytesRead = try await readChannel.read(into: &buffer, at: 0, max: buffer.count)
+        var buffer = ByteBuffer(repeating: 0, count: 32)
+        let bytesRead = try await readChannel.withUnsafeFileDescriptor { fd in
+            let data = try FileHandle(fileDescriptor: fd).readData(ofLength: buffer.capacity)
+            buffer.writeBytes(Array(data))
+            return data.count
+        }
         
         if bytesRead == 0 {
             return nil
@@ -159,8 +164,12 @@ final class InputHandler {
     ///   - buffer: The buffer containing the key data.
     ///   - bytesRead: The number of bytes read.
     /// - Returns: The parsed key.
-    private func parseKey(buffer: [UInt8], bytesRead: Int) -> Key {
-        let bytes = Array(buffer.prefix(bytesRead))
+    private func parseKey(buffer: ByteBuffer, bytesRead: Int) -> Key {
+        var buffer = buffer
+        var bytes = [UInt8]()
+        if let readBytes = buffer.readBytes(length: bytesRead) {
+            bytes = readBytes
+        }
         
         switch bytes.count {
         case 1:
@@ -178,7 +187,7 @@ final class InputHandler {
                 let char = Character(UnicodeScalar(0x60 + bytes[0]))
                 return .combination(char)
             default:
-                if let scalar = UnicodeScalar(bytes[0]) {
+                if let scalar = UnicodeScalar(Int(bytes[0])) {
                     return .character(Character(scalar))
                 }
             }
@@ -186,7 +195,7 @@ final class InputHandler {
         case 2:
             // Two byte keys (most likely Alt+key)
             if bytes[0] == 0x1B {
-                if let scalar = UnicodeScalar(bytes[1]) {
+                if let scalar = UnicodeScalar(Int(bytes[1])) {
                     return .alt(Character(scalar))
                 }
             }

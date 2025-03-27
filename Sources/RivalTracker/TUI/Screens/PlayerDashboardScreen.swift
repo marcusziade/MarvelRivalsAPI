@@ -18,6 +18,33 @@ struct PlayerDashboardScreen: ScreenProtocol {
     /// Callback for going back to the previous screen.
     let onBack: () -> Void
     
+    /// Initialize a player dashboard screen.
+    /// - Parameters:
+    ///   - player: The player to display.
+    ///   - stats: The player's stats.
+    ///   - matches: The player's recent matches.
+    ///   - onRefresh: Callback for refreshing the player data.
+    ///   - onBack: Callback for going back to the previous screen.
+    ///   - selectedSection: The selected section. Default is Overview.
+    ///   - selectedRow: The selected row. Default is 0.
+    init(
+        player: Player,
+        stats: PlayerStats,
+        matches: [Match],
+        onRefresh: @escaping () -> Void,
+        onBack: @escaping () -> Void,
+        selectedSection: Section = .overview,
+        selectedRow: Int = 0
+    ) {
+        self.player = player
+        self.stats = stats
+        self.matches = matches
+        self.onRefresh = onRefresh
+        self.onBack = onBack
+        self.selectedSection = selectedSection
+        self.selectedRow = selectedRow
+    }
+    
     /// The selected section.
     private var selectedSection: Section = .overview
     
@@ -25,7 +52,7 @@ struct PlayerDashboardScreen: ScreenProtocol {
     private var selectedRow: Int = 0
     
     /// The dashboard sections.
-    private enum Section: Int, CaseIterable {
+    enum Section: Int, CaseIterable {
         case overview
         case favoriteHeroes
         case matchHistory
@@ -366,7 +393,7 @@ struct PlayerDashboardScreen: ScreenProtocol {
                 
                 // Find the player in the match
                 let playerDetails = matchDetails.matchPlayers.first { player in
-                    player.playerUid == player.playerUid || player.nickName.lowercased() == player.username.lowercased()
+                    player.nickName.lowercased() == self.player.username.lowercased()
                 }
                 
                 renderer.renderAt(row: rowIndex, column: 4) {
@@ -489,7 +516,7 @@ struct PlayerDashboardScreen: ScreenProtocol {
             
             // Draw win/loss streak
             var currentStreak = 1
-            var streakType = matchHistory[0].result.lowercased().contains("win") ? "Win" : "Loss"
+            let streakType = matchHistory[0].result.lowercased().contains("win") ? "Win" : "Loss"
             
             for i in 1..<min(matchHistory.count, 10) {
                 let isWin = matchHistory[i].result.lowercased().contains("win")
@@ -583,7 +610,7 @@ struct PlayerDashboardScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch key {
         case .left, .character("h"):
             // Switch to the previous section

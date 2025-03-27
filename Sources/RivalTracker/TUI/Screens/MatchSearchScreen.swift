@@ -18,8 +18,29 @@ struct MatchSearchScreen: ScreenProtocol {
     /// The cursor position in the match ID input.
     private var cursorPosition: Int = 0
     
+    /// Initialize a match search screen.
+    /// - Parameters:
+    ///   - onSearch: Callback for searching for a match.
+    ///   - onCancel: Callback for canceling the search.
+    ///   - matchId: The current match ID input.
+    ///   - inputMode: The input mode.
+    ///   - cursorPosition: The cursor position in the match ID input.
+    init(
+        onSearch: @escaping (String) -> Void,
+        onCancel: @escaping () -> Void,
+        matchId: String = "",
+        inputMode: InputMode = .normal,
+        cursorPosition: Int = 0
+    ) {
+        self.onSearch = onSearch
+        self.onCancel = onCancel
+        self.matchId = matchId
+        self.inputMode = inputMode
+        self.cursorPosition = cursorPosition
+    }
+    
     /// Input modes.
-    private enum InputMode {
+    enum InputMode {
         case normal
         case input
     }
@@ -135,7 +156,7 @@ struct MatchSearchScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch inputMode {
         case .normal:
             handleNormalModeKey(key)
@@ -146,7 +167,7 @@ struct MatchSearchScreen: ScreenProtocol {
     
     /// Handle a key press in normal mode.
     /// - Parameter key: The key that was pressed.
-    private func handleNormalModeKey(_ key: Key) {
+    private mutating func handleNormalModeKey(_ key: Key) {
         switch key {
         case .character("i"), .character("I"):
             // Enter input mode
@@ -174,7 +195,7 @@ struct MatchSearchScreen: ScreenProtocol {
     
     /// Handle a key press in input mode.
     /// - Parameter key: The key that was pressed.
-    private func handleInputModeKey(_ key: Key) {
+    private mutating func handleInputModeKey(_ key: Key) {
         switch key {
         case .escape:
             // Exit input mode

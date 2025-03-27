@@ -26,6 +26,36 @@ struct MainMenuScreen: ScreenProtocol {
     /// The currently selected menu item.
     private var selectedItem: Int = 0
     
+    /// Initialize a main menu screen.
+    /// - Parameters:
+    ///   - onPlayerDashboard: Callback for player dashboard option.
+    ///   - onHeroExplorer: Callback for hero explorer option.
+    ///   - onMatchAnalysis: Callback for match analysis option.
+    ///   - onLeaderboards: Callback for leaderboards option.
+    ///   - onSettings: Callback for settings option.
+    ///   - onHelp: Callback for help option.
+    ///   - onExit: Callback for exit option.
+    ///   - selectedItem: The currently selected menu item. Default is 0.
+    init(
+        onPlayerDashboard: @escaping () -> Void,
+        onHeroExplorer: @escaping () -> Void,
+        onMatchAnalysis: @escaping () -> Void,
+        onLeaderboards: @escaping () -> Void,
+        onSettings: @escaping () -> Void,
+        onHelp: @escaping () -> Void,
+        onExit: @escaping () -> Void,
+        selectedItem: Int = 0
+    ) {
+        self.onPlayerDashboard = onPlayerDashboard
+        self.onHeroExplorer = onHeroExplorer
+        self.onMatchAnalysis = onMatchAnalysis
+        self.onLeaderboards = onLeaderboards
+        self.onSettings = onSettings
+        self.onHelp = onHelp
+        self.onExit = onExit
+        self.selectedItem = selectedItem
+    }
+    
     /// The menu items.
     private let menuItems = [
         "Player Dashboard",
@@ -106,7 +136,7 @@ struct MainMenuScreen: ScreenProtocol {
     
     /// Handle a key press.
     /// - Parameter key: The key that was pressed.
-    func handleKey(_ key: Key) {
+    mutating func handleKey(_ key: Key) {
         switch key {
         case .up, .character("k"):
             // Move up
